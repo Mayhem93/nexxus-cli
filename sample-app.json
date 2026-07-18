@@ -1,0 +1,77 @@
+{
+  "name": "application name",
+  "description": "sample app",
+  "schema": {
+    "model1": {
+      "field1": {
+        "type": "string",
+        "required": true
+      },
+      "distance": {
+        "type": "number",
+        "required": true,
+        "filterable": true
+      },
+      "last_observation": {
+        "type": "date",
+        "required": true,
+        "filterable": true
+      }
+    },
+    "stellar_body": {
+      "name": {
+        "type": "string",
+        "required": true
+      },
+      "s_type": {
+        "type": "string",
+        "required": true,
+        "filterable": true
+      },
+      "distance": {
+        "type": "number",
+        "required": true,
+        "filterable": true
+      },
+      "apparent_magnitude": {
+        "type": "number",
+        "required": true,
+        "filterable": true
+      },
+      "observation_count": {
+        "type": "number",
+        "required": true
+      },
+      "is_variable": {
+        "type": "boolean",
+        "required": true,
+        "filterable": true
+      }
+    }
+  },
+  "auth": {
+    "jwtSecret": "test",
+    "jwtExpiresIn": "7d",
+    "strategies": {
+      "local": {},
+      "google": {
+        "clientID": "",
+        "clientSecret": "",
+        "callbackURL": "http://localhost:5000/auth/google/callback"
+      }
+    },
+    "userTypes": {
+      "default": {}
+    },
+    "userDetailSchema": {
+      "default": {
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

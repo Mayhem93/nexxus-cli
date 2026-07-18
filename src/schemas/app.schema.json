@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "logger": { "type": "string" },
+    "database": { "type": "string" },
+    "message_queue": { "type": "string" }
+  },
+  "required": ["logger", "database", "message_queue"],
+  "additionalProperties": true
+}
