@@ -3,49 +3,53 @@
   "description": "sample app",
   "schema": {
     "model1": {
-      "field1": {
-        "type": "string",
-        "required": true
-      },
-      "distance": {
-        "type": "number",
-        "required": true,
-        "filterable": true
-      },
-      "last_observation": {
-        "type": "date",
-        "required": true,
-        "filterable": true
+      "fields": {
+        "field1": {
+          "type": "string",
+          "required": true
+        },
+        "distance": {
+          "type": "float",
+          "required": true,
+          "filterable": true
+        },
+        "last_observation": {
+          "type": "date",
+          "required": true,
+          "filterable": true
+        }
       }
     },
     "stellar_body": {
-      "name": {
-        "type": "string",
-        "required": true
-      },
-      "s_type": {
-        "type": "string",
-        "required": true,
-        "filterable": true
-      },
-      "distance": {
-        "type": "number",
-        "required": true,
-        "filterable": true
-      },
-      "apparent_magnitude": {
-        "type": "number",
-        "required": true,
-        "filterable": true
-      },
-      "observation_count": {
-        "type": "number",
-        "required": true
-      },
-      "is_variable": {
-        "type": "boolean",
-        "required": true,
-        "filterable": true
+      "fields": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "s_type": {
+          "type": "string",
+          "required": true,
+          "filterable": true
+        },
+        "distance": {
+          "type": "float",
+          "required": true,
+          "filterable": true
+        },
+        "apparent_magnitude": {
+          "type": "float",
+          "required": true,
+          "filterable": true
+        },
+        "observation_count": {
+          "type": "int",
+          "required": true
+        },
+        "is_variable": {
+          "type": "boolean",
+          "required": true,
+          "filterable": true
+        }
       }
     }
   },
