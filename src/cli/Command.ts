@@ -1,7 +1,12 @@
+import { FatalErrorException } from '@mayhem93/nexxus-core-lib';
+
 import type { ArgumentParser, SubParser } from 'argparse';
 import type { NexxusConfigManager, NexxusBaseLogger } from '@mayhem93/nexxus-core-lib';
 import type { NexxusDatabaseAdapter } from '@mayhem93/nexxus-database-lib';
 import type { NexxusMessageQueueAdapter } from '@mayhem93/nexxus-message-queue-lib';
+
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Adapters with their generic parameters erased — the concrete classes are
@@ -78,4 +83,62 @@ export abstract class Command<TArgs extends CommandArgs = CommandArgs> {
 
   /** Run the command against the composed services and parsed args. */
   public abstract execute(ctx: CommandContext<TArgs>): Promise<void>;
+
+  /**
+   * Resolves a JSON-valued argument (`--payload`, `--roles`, ...). A value whose
+   * trimmed form starts with `{` or `[` is inline JSON; anything else is a file
+   * path — bare (relative to the current directory) or a `file://` URL.
+   *
+   * On the base class so every JSON argument the CLI accepts behaves identically,
+   * and a new command taking one inherits the convention for free.
+   */
+  protected resolveJsonArgument(raw: string, argName: string): unknown {
+    const trimmed = raw.trim();
+    const text = trimmed.startsWith('{') || trimmed.startsWith('[')
+      ? trimmed
+      : this.readPayloadFile(raw, argName);
+
+    try {
+      return JSON.parse(text) as unknown;
+    } catch (err) {
+      throw new FatalErrorException(`${argName} is not valid JSON: ${(err as Error).message}`);
+    }
+  }
+
+  /**
+   * {@link resolveJsonArgument}, narrowed to a JSON object. `T` lets the caller
+   * name the shape it's about to hand to a model constructor (which is what
+   * actually validates it), keeping that unavoidable assertion at this one site
+   * instead of at every call.
+   */
+  protected resolveJsonObjectArgument<T = Record<string, unknown>>(raw: string, argName: string): T {
+    const parsed = this.resolveJsonArgument(raw, argName);
+
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+      throw new FatalErrorException(`${argName} must be a JSON object.`);
+    }
+
+    return parsed as T;
+  }
+
+  /** {@link resolveJsonArgument}, narrowed to a JSON array. */
+  protected resolveJsonArrayArgument(raw: string, argName: string): unknown[] {
+    const parsed = this.resolveJsonArgument(raw, argName);
+
+    if (!Array.isArray(parsed)) {
+      throw new FatalErrorException(`${argName} must be a JSON array.`);
+    }
+
+    return parsed;
+  }
+
+  private readPayloadFile(raw: string, argName: string): string {
+    const filePath = raw.startsWith('file://') ? fileURLToPath(raw) : raw;
+
+    try {
+      return readFileSync(filePath, 'utf8');
+    } catch (err) {
+      throw new FatalErrorException(`${argName} could not be read from "${filePath}": ${(err as Error).message}`);
+    }
+  }
 }

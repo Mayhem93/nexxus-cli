@@ -17,6 +17,7 @@ import { NexxusMessageQueueAdapter, NexxusRabbitMq } from '@mayhem93/nexxus-mess
 
 import { BootstrapCommand } from '../commands/BootstrapCommand.ts';
 import { AppCommand } from '../commands/AppCommand.ts';
+import { AclCommand } from '../commands/AclCommand.ts';
 import type { AnyMessageQueueAdapter, AnyNexxusDatabaseAdapter, CliServices, Command, ParsedInvocation } from '../cli/Command.ts';
 
 import { ArgumentParser } from 'argparse';
@@ -66,7 +67,11 @@ export class NexxusCli extends NexxusBaseService<NexxusCliConfig> {
 
   // The CLI's own command surface. Registered by `parseArgs`; owns only
   // <command>/<subcommand> — config values are the ConfigManager's concern.
-  private static readonly commands: readonly Command<any>[] = [new BootstrapCommand(), new AppCommand()];
+  private static readonly commands: readonly Command<any>[] = [
+    new BootstrapCommand(),
+    new AppCommand(),
+    new AclCommand(),
+  ];
 
   private readonly configManager: NexxusConfigManager;
   private readonly logger: NexxusBaseLogger<any>;
