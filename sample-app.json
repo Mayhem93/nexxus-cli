@@ -53,9 +53,12 @@
       }
     }
   },
+  "signingSecret": "test",
+  "session": {
+    "jwtExpiresIn": 3600,
+    "refreshTokenExpiresIn": 86400
+  },
   "auth": {
-    "jwtSecret": "test",
-    "jwtExpiresIn": "7d",
     "strategies": {
       "local": {},
       "google": {
