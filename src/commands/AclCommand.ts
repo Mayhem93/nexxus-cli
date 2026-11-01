@@ -81,7 +81,8 @@ export class AclCommand extends Command<AclArgs> {
   private async loadApplication(ctx: CommandContext<AclArgs>, appId: string): Promise<NexxusApplication> {
     // Note: the adapter drops missing documents rather than returning null for
     // them, so an unknown id yields an empty array, not `[null]`.
-    const [app] = await ctx.database.getItems({ ids: [appId], type: MODEL_REGISTRY.application });
+    const apps : Map<string, NexxusApplication | null> = await ctx.database.getItems({ ids: [appId], type: MODEL_REGISTRY.application });
+    const app = apps.get(appId);
 
     if (!app) {
       throw new FatalErrorException(`Application "${appId}" not found.`);
